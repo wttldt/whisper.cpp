@@ -1,0 +1,32 @@
+  windows:
+    runs-on: windows-latest
+
+
+    strategy:
+      matrix:
+        build: [Release]
+        arch: [Win32, x64]
+        sdl2: [ON]
+        include:
+          - arch: Win32
+            s2arc: x86
+          - arch: x64
+            s2arc: x64
+          - sdl2: ON
+            s2ver: 2.26.0
+
+
+    steps:
+      - name: Clone
+        uses: actions/checkout@v1
+
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+
+      - name: Fetch SDL2 and set SDL2_DIR
+        if: matrix.sdl2 == 'ON'
+        run: |
+          C:/msys64/usr/bin/wget.exe -qO sdl2.zip https://github.com/libsdl-org/SDL/releases/download/release-${{ matrix.s2ver }}/SDL2-devel-${{ matrix.s2ver }}-VC.zip
+          7z x sdl2.zip
